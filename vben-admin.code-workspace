@@ -13,6 +13,10 @@
       "path": "apps/web-ele",
     },
     {
+      "name": "@dtera/web-mlstats",
+      "path": "apps/web-mlstats",
+    },
+    {
       "name": "@vben/web-naive",
       "path": "apps/web-naive",
     },

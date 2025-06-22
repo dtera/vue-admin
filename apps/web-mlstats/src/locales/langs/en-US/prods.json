@@ -1,0 +1,21 @@
+{
+  "title": "Product Management",
+  "manage": {
+    "title": "Product List",
+    "list": "Product List",
+    "name": "Product",
+    "id": "Product ID",
+    "prodName": "Product Name",
+    "prodTitle": "Product Title",
+    "prodImgUrl": "Product Picture",
+    "prodType": "Product Type",
+    "prodDetail": "Product Detail",
+    "prodLlmPredNames": "LLM Pred Product Name",
+    "status": "Status",
+    "remark": "Remark",
+    "createTime": "Creation Time",
+    "operation": "Operation",
+    "permissions": "Permissions",
+    "setPermissions": "Permissions"
+  }
+}
