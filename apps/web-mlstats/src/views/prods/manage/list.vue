@@ -3,25 +3,19 @@ import type {
   OnActionClickParams,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
+import type { ProductApi } from '#/api';
 
 import { ref } from 'vue';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { listData } from '#/api';
+import { getProductList } from '#/api';
 import { $t } from '#/locales';
 
 import { useColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';
 import Form from './modules/form.vue';
-
-const props = defineProps({
-  reqPath: {
-    type: String,
-    default: '/gift/search',
-  },
-});
 
 const [FormDrawer] = useVbenDrawer({
   connectedComponent: Form,
@@ -41,20 +35,17 @@ const [Grid] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await listData(
-            {
-              pageNum: page.currentPage,
-              pageSize: page.pageSize,
-              ...formValues,
-            },
-            props.reqPath,
-          );
+          return await getProductList({
+            pageNum: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
         },
       },
     },
     pagerConfig: {
       pageSize: 10,
-      layouts: ['Total', 'Home', 'JumpNumber', 'End', 'FullJump'],
+      layouts: ['Total', 'PageCount', 'Home', 'Number', 'End', 'FullJump'],
     },
     rowConfig: {
       keyField: 'id',
@@ -73,11 +64,11 @@ const [Grid] = useVbenVxeGrid({
       search: true,
       zoom: true,
     },
-  } as VxeTableGridOptions<object>,
+  } as VxeTableGridOptions<ProductApi.Product>,
   showSearchForm: false,
 });
 
-function onActionClick(e: OnActionClickParams<object>) {
+function onActionClick(e: OnActionClickParams<ProductApi.Product>) {
   switch (e.code) {
     case 'detail': {
       showDetail(e.row);
@@ -106,7 +97,7 @@ const closeDetail = () => {
   <Page auto-content-height>
     <FormDrawer />
     <Grid :table-title="$t('prods.manage.list')">
-      <template #toolbar-tools></template>
+      <template #toolbar-tools> </template>
     </Grid>
   </Page>
 
