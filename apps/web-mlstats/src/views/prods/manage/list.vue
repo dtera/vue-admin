@@ -45,8 +45,7 @@ const [Grid] = useVbenVxeGrid({
     },
     pagerConfig: {
       pageSize: 10,
-      layouts: ["Total", "Home", "JumpNumber", "End", "FullJump"],
-      autoHidden: true
+      layouts: ["Total", "Home", "JumpNumber", "End", "FullJump"]
     },
     rowConfig: {
       keyField: "id",
