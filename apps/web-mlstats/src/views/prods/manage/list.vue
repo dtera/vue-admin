@@ -1,35 +1,35 @@
 <script lang="ts" setup>
 import type {
   OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
-import type { ProductApi } from '#/api';
+  VxeTableGridOptions
+} from "#/adapter/vxe-table";
+import type { ProductApi } from "#/api";
 
-import { ref } from 'vue';
+import { ref } from "vue";
 
-import { Page, useVbenDrawer } from '@vben/common-ui';
+import { Page, useVbenDrawer } from "@vben/common-ui";
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getProductList } from '#/api';
-import { $t } from '#/locales';
+import { useVbenVxeGrid } from "#/adapter/vxe-table";
+import { getProductList } from "#/api";
+import { $t } from "#/locales";
 
-import { useColumns, useGridFormSchema } from './data';
-import Detail from './modules/detail.vue';
-import Form from './modules/form.vue';
+import { useColumns, useGridFormSchema } from "./data";
+import Detail from "./modules/detail.vue";
+import Form from "./modules/form.vue";
 
 const [FormDrawer] = useVbenDrawer({
   connectedComponent: Form,
-  destroyOnClose: true,
+  destroyOnClose: true
 });
 
 const [Grid] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
-    submitOnChange: true,
+    submitOnChange: true
   },
   gridOptions: {
     columns: useColumns(onActionClick),
-    height: 'auto',
+    height: "auto",
     keepSource: true,
     showOverflow: false,
     proxyConfig: {
@@ -38,39 +38,40 @@ const [Grid] = useVbenVxeGrid({
           return await getProductList({
             pageNum: page.currentPage,
             pageSize: page.pageSize,
-            ...formValues,
+            ...formValues
           });
-        },
-      },
+        }
+      }
     },
     pagerConfig: {
       pageSize: 10,
-      layouts: ['Total', 'PageCount', 'Home', 'Number', 'End', 'FullJump'],
+      layouts: ["Total", "Home", "JumpNumber", "End", "FullJump"],
+      autoHidden: true
     },
     rowConfig: {
-      keyField: 'id',
-      isHover: true,
+      keyField: "id",
+      isHover: true
     },
     columnConfig: {
-      isHover: true,
+      isHover: true
     },
     cellConfig: {
-      padding: true,
+      padding: true
     },
     toolbarConfig: {
       custom: true,
       export: false,
-      refresh: { code: 'query' },
+      refresh: { code: "query" },
       search: true,
-      zoom: true,
-    },
+      zoom: true
+    }
   } as VxeTableGridOptions<ProductApi.Product>,
-  showSearchForm: false,
+  showSearchForm: false
 });
 
 function onActionClick(e: OnActionClickParams<ProductApi.Product>) {
   switch (e.code) {
-    case 'detail': {
+    case "detail": {
       showDetail(e.row);
       break;
     }
@@ -97,7 +98,7 @@ const closeDetail = () => {
   <Page auto-content-height>
     <FormDrawer />
     <Grid :table-title="$t('prods.manage.list')">
-      <template #toolbar-tools> </template>
+      <template #toolbar-tools></template>
     </Grid>
   </Page>
 
