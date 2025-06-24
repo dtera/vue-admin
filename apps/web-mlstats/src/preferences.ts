@@ -1,4 +1,4 @@
-import { defineOverridesPreferences } from '@vben/preferences';
+import { defineOverridesPreferences } from "@vben/preferences";
 
 /**
  * @description 项目配置文件
@@ -9,36 +9,37 @@ export const overridesPreferences = defineOverridesPreferences({
   // overrides
   app: {
     name: import.meta.env.VITE_APP_TITLE,
-    defaultHomePath: '/prods/list',
-    layout: 'header-nav',
+    defaultHomePath: "/prods/list",
+    layout: "header-nav",
     enablePreferences: false,
-    authPageLayout: 'panel-center',
-    defaultAvatar: 'https://avatars.githubusercontent.com/u/45172737?s=96&v=4',
+    authPageLayout: "panel-center",
+    defaultAvatar: "https://avatars.githubusercontent.com/u/45172737?s=96&v=4"
   },
   sidebar: {
-    collapsed: true,
+    collapsed: true
   },
   tabbar: {
-    enable: false,
+    enable: false
   },
   widget: {
     lockScreen: false,
     notification: false,
     themeToggle: false,
     languageToggle: false,
-    refresh: false,
+    refresh: false
   },
   copyright: {
-    companyName: 'Tencent',
-    date: '2025',
+    companyName: "Tencent",
+    date: "2025",
+    companySiteLink: "#"
   },
   logo: {
-    source: '/favicon_wechat.png',
+    source: "/favicon_wechat.png"
   },
   theme: {
-    mode: 'light',
+    mode: "light",
     semiDarkHeader: true,
-    builtinType: 'green',
-    colorPrimary: 'hsl(127 91% 35%)',
-  },
+    builtinType: "green",
+    colorPrimary: "hsl(127 91% 35%)"
+  }
 });
