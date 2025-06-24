@@ -15,7 +15,6 @@ const authStore = useAuthStore();
 
 const formSchema = computed((): VbenFormSchema[] => {
   return [
-
     {
       component: "VbenInput",
       componentProps: {
@@ -68,9 +67,9 @@ async function onSubmit(params: Recordable<any>) {
     ref="loginRef"
     :title="$t('authentication.welcomeBack')"
     :form-schema="formSchema"
-    :show-qrcode-login=false
-    :show-code-login=false
-    :show-third-party-login=false
+    :show-qrcode-login="false"
+    :show-code-login="false"
+    :show-third-party-login="false"
     :loading="authStore.loginLoading"
     @submit="onSubmit"
   />
