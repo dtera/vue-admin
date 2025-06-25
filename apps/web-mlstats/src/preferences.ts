@@ -38,7 +38,7 @@ export const overridesPreferences = defineOverridesPreferences({
   },
   theme: {
     mode: "light",
-    semiDarkHeader: true,
+    semiDarkHeader: false,
     builtinType: "green",
     colorPrimary: "hsl(127 91% 35%)"
   }
