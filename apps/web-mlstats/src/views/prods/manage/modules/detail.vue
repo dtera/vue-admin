@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed } from "vue";
-//import VueJsonPretty from "vue-json-pretty";
+// import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
 
-//import { parseJson } from "#/util/utils";
+// import { parseJson } from "#/util/utils";
 
 const props = defineProps({
   visible: Boolean,
@@ -66,7 +66,9 @@ const close = () => {
 
       <a-row class="detail-row">
         <a-col :span="6" class="detail-label">商品最低价：</a-col>
-        <a-col :span="18" class="detail-value">{{ record.skuMinPrice / 100 }}元</a-col>
+        <a-col :span="18" class="detail-value">
+          {{ record.skuMinPrice / 100 }}元
+        </a-col>
       </a-row>
 
       <!--      <a-row class="detail-row">
