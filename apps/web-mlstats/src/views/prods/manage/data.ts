@@ -3,7 +3,7 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ProductApi } from '#/api';
 
 import { $t } from '#/locales';
-import { parseJson } from '#/util/utils';
+//import { parseJson } from '#/util/utils';
 
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
@@ -28,12 +28,12 @@ export function useColumns<T = ProductApi.Product>(
     {
       field: 'id',
       title: $t('prods.manage.id'),
-      width: '10%',
+      width: '15%',
     },
     {
       field: 'prodTitle',
       title: $t('prods.manage.prodTitle'),
-      width: '15%',
+      width: '25%',
     },
     {
       field: 'prodImgUrl',
@@ -49,9 +49,9 @@ export function useColumns<T = ProductApi.Product>(
     {
       field: 'prodType',
       title: $t('prods.manage.prodType'),
-      width: '10%',
+      width: '15%',
     },
-    {
+    /*{
       field: 'prodDetail',
       title: $t('prods.manage.prodDetail'),
       type: 'html',
@@ -59,8 +59,8 @@ export function useColumns<T = ProductApi.Product>(
         return parseJson(cellValue).replaceAll('\n', '<br />');
       },
       width: '20%',
-    },
-    {
+    },*/
+    /*{
       field: 'prodLlmPredNames',
       title: $t('prods.manage.prodLlmPredNames'),
       cellRender: {
@@ -70,6 +70,19 @@ export function useColumns<T = ProductApi.Product>(
         },
       },
       width: '30%',
+    },*/
+    {
+      title: $t('prods.manage.l2Name'),
+      field: 'l2Name',
+      width: '20%',
+    },
+    {
+      title: $t('prods.manage.skuMinPrice'),
+      field: 'skuMinPrice',
+      width: '10%',
+      formatter: ({ cellValue }) => {
+        return `${cellValue / 100}元`;
+      },
     },
     {
       align: 'center',
