@@ -1,76 +1,85 @@
 <script lang="ts" setup>
 import type {
   OnActionClickParams,
-  VxeTableGridOptions
-} from "#/adapter/vxe-table";
-import type { ProductApi } from "#/api";
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 
-import { ref } from "vue";
+import { ref } from 'vue';
 
-import { Page, useVbenDrawer } from "@vben/common-ui";
+import { Page, useVbenDrawer } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from "#/adapter/vxe-table";
-import { getProductList } from "#/api";
-import { $t } from "#/locales";
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { listData } from '#/api';
+import { $t } from '#/locales';
 
-import { useColumns, useGridFormSchema } from "./data";
-import Detail from "./modules/detail.vue";
-import Form from "./modules/form.vue";
+import { useColumns, useGridFormSchema } from './data';
+import Detail from './modules/detail.vue';
+import Form from './modules/form.vue';
+
+const props = defineProps({
+  reqPath: {
+    type: String,
+    default: '/gift/search',
+  },
+});
 
 const [FormDrawer] = useVbenDrawer({
   connectedComponent: Form,
-  destroyOnClose: true
+  destroyOnClose: true,
 });
 
 const [Grid] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
-    submitOnChange: true
+    submitOnChange: true,
   },
   gridOptions: {
     columns: useColumns(onActionClick),
-    height: "auto",
+    height: 'auto',
     keepSource: true,
     showOverflow: false,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getProductList({
-            pageNum: page.currentPage,
-            pageSize: page.pageSize,
-            ...formValues
-          });
-        }
-      }
+          return await listData(
+            {
+              pageNum: page.currentPage,
+              pageSize: page.pageSize,
+              ...formValues,
+            },
+            props.reqPath,
+          );
+        },
+      },
     },
     pagerConfig: {
       pageSize: 10,
-      layouts: ["Total", "Home", "JumpNumber", "End", "FullJump"]
+      layouts: ['Total', 'Home', 'JumpNumber', 'End', 'FullJump'],
     },
     rowConfig: {
-      keyField: "id",
-      isHover: true
+      keyField: 'id',
+      isHover: true,
     },
     columnConfig: {
-      isHover: true
+      isHover: true,
     },
     cellConfig: {
-      padding: true
+      padding: true,
     },
     toolbarConfig: {
       custom: true,
       export: false,
-      refresh: { code: "query" },
+      refresh: { code: 'query' },
       search: true,
-      zoom: true
-    }
-  } as VxeTableGridOptions<ProductApi.Product>,
-  showSearchForm: false
+      zoom: true,
+    },
+  } as VxeTableGridOptions<object>,
+  showSearchForm: false,
 });
 
-function onActionClick(e: OnActionClickParams<ProductApi.Product>) {
+function onActionClick(e: OnActionClickParams<object>) {
   switch (e.code) {
-    case "detail": {
+    case 'detail': {
       showDetail(e.row);
       break;
     }
