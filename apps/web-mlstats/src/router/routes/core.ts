@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 import type { RouteRecordRaw } from 'vue-router';
 
 import { LOGIN_PATH } from '@vben/constants';
