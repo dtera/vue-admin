@@ -3,7 +3,7 @@ interface CategoryItem {
 }
 
 interface DataItem {
-  categorys?: CategoryItem[];
+  categories?: CategoryItem[];
 }
 
 export const parseJson = (value: any, ret_json: boolean = false) => {
@@ -17,7 +17,7 @@ export const parseJson = (value: any, ret_json: boolean = false) => {
     let result = '';
 
     for (const item of jsonData) {
-      const categories = item.categorys || [];
+      const categories = item.categories || [];
       if (categories.length >= 2) {
         const key = categories[0]?.name ?? '';
         const value = categories[1]?.name ?? '';
@@ -31,6 +31,7 @@ export const parseJson = (value: any, ret_json: boolean = false) => {
   }
 };
 
+// noinspection JSUnusedGlobalSymbols
 export const ellipsis = (value: string) => {
   if (!value) return '';
   if (value.length > 20) {

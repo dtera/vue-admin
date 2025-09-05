@@ -31,13 +31,14 @@ export const overridesPreferences = defineOverridesPreferences({
   copyright: {
     companyName: 'Tencent',
     date: '2025',
+    companySiteLink: '#',
   },
   logo: {
     source: '/favicon_wechat.png',
   },
   theme: {
     mode: 'light',
-    semiDarkHeader: true,
+    semiDarkHeader: false,
     builtinType: 'green',
     colorPrimary: 'hsl(127 91% 35%)',
   },

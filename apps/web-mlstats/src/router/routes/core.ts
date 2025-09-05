@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 import type { RouteRecordRaw } from 'vue-router';
 
 import { LOGIN_PATH } from '@vben/constants';
@@ -39,7 +41,7 @@ const coreRoutes: RouteRecordRaw[] = [
     children: [
       {
         meta: {
-          icon: 'ion:settings-outline',
+          icon: 'charm:organisation',
           order: 9997,
           title: $t('prods.title'),
         },

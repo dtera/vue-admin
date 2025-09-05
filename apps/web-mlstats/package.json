@@ -28,6 +28,7 @@
     "#/*": "./src/*"
   },
   "dependencies": {
+    "@klarr-agency/circum-icons-vue": "^2.0.1",
     "@tanstack/vue-query": "catalog:",
     "@vben-core/menu-ui": "workspace:*",
     "@vben/access": "workspace:*",
@@ -47,8 +48,10 @@
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
     "dayjs": "catalog:",
+    "echarts": "catalog:",
     "json-bigint": "catalog:",
     "pinia": "catalog:",
+    "relation-graph-vue3": "^2.2.11",
     "vue": "catalog:",
     "vue-json-pretty": "^2.4.0",
     "vue-router": "catalog:"

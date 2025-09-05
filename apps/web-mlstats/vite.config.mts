@@ -1,4 +1,6 @@
-import { defineConfig } from "@vben/vite-config";
+// noinspection SpellCheckingInspection
+
+import { defineConfig } from '@vben/vite-config';
 
 export default defineConfig(async () => {
   return {
@@ -6,20 +8,26 @@ export default defineConfig(async () => {
     vite: {
       server: {
         proxy: {
-          "/api/all7b": {
+          '/api/gift': {
             changeOrigin: true,
-            rewrite: (path) => path.replace(/^\/api/, ""),
-            target: "http://localhost:8080",
-            ws: true
+            rewrite: (path) => path.replace(/^\/api/, ''),
+            target: 'http://localhost:8080',
+            ws: true,
           },
-          "/api": {
+          '/api/wxec': {
             changeOrigin: true,
-            rewrite: (path) => path.replace(/^\/api/, ""),
-            target: "http://localhost:5320/api",
-            ws: true
-          }
-        }
-      }
-    }
+            rewrite: (path) => path.replace(/^\/api/, ''),
+            target: 'http://localhost:8080',
+            ws: true,
+          },
+          '/api': {
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/api/, ''),
+            target: 'http://localhost:5320/api',
+            ws: true,
+          },
+        },
+      },
+    },
   };
 });
