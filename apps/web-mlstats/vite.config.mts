@@ -20,6 +20,12 @@ export default defineConfig(async () => {
             target: 'http://localhost:8080',
             ws: true,
           },
+          '/api/menu': {
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/api/, ''),
+            target: 'http://localhost:8080',
+            ws: true,
+          },
           '/api': {
             changeOrigin: true,
             rewrite: (path) => path.replace(/^\/api/, ''),
