@@ -9,6 +9,7 @@ export const overridesPreferences = defineOverridesPreferences({
   // overrides
   app: {
     name: import.meta.env.VITE_APP_TITLE,
+    accessMode: 'backend',
     defaultHomePath: '/prods/list',
     layout: 'header-nav',
     enablePreferences: false,
@@ -19,6 +20,10 @@ export const overridesPreferences = defineOverridesPreferences({
     collapsed: true,
   },
   tabbar: {
+    enable: false,
+    keepAlive: true,
+  },
+  transition: {
     enable: false,
   },
   widget: {

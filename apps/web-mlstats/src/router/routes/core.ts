@@ -38,28 +38,7 @@ const coreRoutes: RouteRecordRaw[] = [
     name: 'Root',
     path: '/',
     redirect: preferences.app.defaultHomePath,
-    children: [
-      {
-        meta: {
-          icon: 'charm:organisation',
-          order: 9997,
-          title: $t('prods.title'),
-        },
-        name: 'Products',
-        path: '/prods',
-        children: [
-          {
-            path: '/prods/list',
-            name: 'ProductList',
-            meta: {
-              icon: 'lucide:table',
-              title: $t('prods.manage.title'),
-            },
-            component: () => import('#/views/prods/manage/list.vue'),
-          },
-        ],
-      },
-    ],
+    children: [],
   },
   {
     component: AuthPageLayout,

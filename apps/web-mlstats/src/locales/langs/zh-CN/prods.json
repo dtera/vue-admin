@@ -1,6 +1,7 @@
 {
   "manage": {
     "title": "商品列表",
+    "title1": "商品列表-测试",
     "list": "商品列表",
     "name": "商品",
     "productId": "商品ID",
