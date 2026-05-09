@@ -18,7 +18,7 @@
     },
     {
       "name": "@dtera/web-mlstats",
-      "path": "apps/web-mlstats",
+      "path": "apps/web-mlstats"
     },
     {
       "name": "@vben/web-naive",
