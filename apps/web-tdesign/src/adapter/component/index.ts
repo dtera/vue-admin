@@ -89,8 +89,8 @@ const TreeSelect = defineAsyncComponent(
 );
 const Upload = defineAsyncComponent(() => import('tdesign-vue-next/es/upload'));
 
-const withDefaultPlaceholder = <T extends Component>(
-  component: T,
+const withDefaultPlaceholder = (
+  component: Component,
   type: 'input' | 'select',
   componentProps: Recordable<any> = {},
 ) => {

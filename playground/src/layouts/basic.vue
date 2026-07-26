@@ -239,8 +239,11 @@ onBeforeMount(() => {
 
 <template>
   <BasicLayout
+    :avatar
+    :text="userStore.userInfo?.realName"
     @clear-preferences-and-logout="handleLogout"
     @click-logo="handleClickLogo"
+    @logout="handleLogout"
   >
     <template #user-dropdown>
       <UserDropdown
@@ -251,6 +254,7 @@ onBeforeMount(() => {
         tag-text="Pro"
         trigger="both"
         @logout="handleLogout"
+        @clear-preferences-and-logout="handleLogout"
       />
     </template>
     <template #notification>

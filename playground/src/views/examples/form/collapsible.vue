@@ -1,17 +1,13 @@
 <script lang="ts" setup>
-import type { RadioGroupProps } from 'ant-design-vue';
+import type { RadioGroupProps } from 'antdv-next';
 
-import type { FormLayout } from '@vben/common-ui';
-
-import type { CollapsibleParamSchema } from '@vben-core/shadcn-ui';
+import type { CollapsibleParamSchema, FormLayout } from '@vben/common-ui';
 
 import { h, ref } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { Page, VbenCollapsibleParams } from '@vben/common-ui';
 
-import { VbenCollapsibleParams } from '@vben-core/shadcn-ui';
-
-import { Button, Card, message, RadioGroup } from 'ant-design-vue';
+import { Button, Card, message, RadioGroup } from 'antdv-next';
 
 import { useVbenForm, z } from '#/adapter/form';
 
@@ -26,8 +22,8 @@ const layout = ref<FormLayout>('vertical');
 
 function getNumberValidator(key: string, limit?: [number?, number?]) {
   let validator = z.number({
-    required_error: `${key} 值不能为空`,
-    invalid_type_error: `${key} 值只能为数字`,
+    error: (issue) =>
+      issue.input === undefined ? `${key} 值不能为空` : `${key} 值只能为数字`,
   });
 
   if (limit) {
@@ -261,14 +257,14 @@ function handleSetFormValue() {
 }
 
 function handleResetFormValue() {
-  baseFormApi.resetForm(undefined, { force: true });
+  baseFormApi.reset(undefined, { force: true });
 }
 
 async function handleSubmitFormValue() {
   const { valid } = await baseFormApi.validate();
 
   if (valid) {
-    baseFormApi.submitForm();
+    baseFormApi.submit();
   }
 }
 </script>

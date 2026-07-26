@@ -11,7 +11,11 @@ import type {
 import { markRaw, reactive, readonly, watch } from 'vue';
 
 import { StorageManager } from '@vben-core/shared/cache';
-import { isMacOs, merge } from '@vben-core/shared/utils';
+import {
+  isMacOs,
+  merge,
+  mergeWithArrayOverride,
+} from '@vben-core/shared/utils';
 
 import {
   breakpointsTailwind,
@@ -41,17 +45,19 @@ class PreferenceManager {
 
   constructor() {
     this.cache = new StorageManager();
-    this.state = reactive<Preferences>(
-      this.loadFromCache() || { ...defaultPreferences },
-    );
+    // 构造函数不再同步读取缓存，使用默认值初始化
+    // 真正的缓存加载在 initPreferences 中完成（已经是 async）
+    this.state = reactive<Preferences>({ ...defaultPreferences });
     this.debouncedSave = useDebounceFn(() => this.saveToCache(), 150);
   }
 
   /**
    * 清除所有缓存的偏好设置
    */
-  clearCache = () => {
-    Object.values(STORAGE_KEYS).forEach((key) => this.cache.removeItem(key));
+  clearCache = async () => {
+    await Promise.all(
+      Object.values(STORAGE_KEYS).map((key) => this.cache.removeItem(key)),
+    );
   };
 
   /**
@@ -122,31 +128,37 @@ class PreferenceManager {
     // 使用命名空间初始化存储管理器
     this.cache = new StorageManager({ prefix: namespace });
 
-    // 合并初始偏好设置
+    // 合并初始偏好设置：前面的对象优先，后面的对象仅补齐缺失字段
     this.initialPreferences = merge({}, overrides, defaultPreferences);
     this.customPreferencesExtension = extension ?? null;
     this.initialCustomPreferences = this.resolveCustomPreferencesDefaults(
       this.customPreferencesExtension,
     );
 
-    // 加载缓存的偏好设置并与初始配置合并
-    const cachedPreferences = this.loadFromCache() || {};
-    const mergedPreference = merge(
+    // 加载缓存的偏好设置，并仅用缓存补齐初始化配置中未显式设置的字段
+    const cachedPreferences = (await this.loadFromCache()) || {};
+    // 修复历史脏数据：早期版本用 defu(merge) 合并数组，导致 widget.order
+    // 在每次 updatePreferences 时被 concat 追加，膨胀到几十/上百条重复 key。
+    // 这里在加载缓存后做一次去重，保留首次出现的 key。
+    this.sanitizeCachedArray(cachedPreferences, 'widget', 'order');
+    const mergedPreference = mergeWithArrayOverride(
       {},
-      cachedPreferences,
-      this.initialPreferences,
+      cachedPreferences, // 用户缓存的设置优先
+      this.initialPreferences, // 初始设置仅补齐缺失字段
     );
 
     // 更新偏好设置
     this.updatePreferences(mergedPreference);
+
+    const cachedCustom = (await this.loadCustomFromCache()) || {};
     this.replaceCustomPreferences(
-      merge(
+      mergeWithArrayOverride(
         {},
-        this.sanitizeCustomPreferences(this.loadCustomFromCache() || {}),
+        this.sanitizeCustomPreferences(cachedCustom),
         this.initialCustomPreferences,
       ),
     );
-    this.saveToCache();
+    await this.saveToCache();
 
     // 设置监听器
     this.setupWatcher();
@@ -160,13 +172,13 @@ class PreferenceManager {
   /**
    * 重置偏好设置到初始状态
    */
-  resetPreferences = () => {
+  resetPreferences = async () => {
     // 将状态重置为初始偏好设置
     Object.assign(this.state, this.initialPreferences);
     this.replaceCustomPreferences(this.initialCustomPreferences);
 
     // 保存偏好设置至缓存
-    this.saveToCache();
+    await this.saveToCache();
 
     // 直接触发 UI 更新
     this.handleUpdates(this.state);
@@ -176,11 +188,7 @@ class PreferenceManager {
    * 更新扩展偏好设置
    * @param updates - 要更新的扩展偏好设置
    */
-  updateCustomPreferences = <
-    TCustomPreferences extends object = CustomPreferencesRecord,
-  >(
-    updates: DeepPartial<TCustomPreferences>,
-  ) => {
+  updateCustomPreferences = (updates: DeepPartial<object>) => {
     if (!this.customPreferencesExtension) {
       return;
     }
@@ -194,7 +202,7 @@ class PreferenceManager {
     }
 
     this.replaceCustomPreferences(
-      merge({}, sanitizedUpdates, markRaw(this.customState)),
+      mergeWithArrayOverride({}, sanitizedUpdates, markRaw(this.customState)),
     );
     this.debouncedSave();
   };
@@ -205,13 +213,20 @@ class PreferenceManager {
    */
   updatePreferences = (updates: DeepPartial<Preferences>) => {
     // 深度合并更新内容和当前状态
-    const mergedState = merge({}, updates, markRaw(this.state));
+    // 注意：必须用 mergeWithArrayOverride 而不是 merge。
+    // defu(merge) 对数组的语义是 concat 追加，会导致 widget.order 等
+    // 数组字段在每次 updatePreferences 时被重复追加，指数级膨胀。
+    const mergedState = mergeWithArrayOverride(
+      {},
+      updates,
+      markRaw(this.state),
+    );
     Object.assign(this.state, mergedState);
 
     // 根据更新的值执行更新
     this.handleUpdates(updates);
 
-    // 保存到缓存
+    // 保存到缓存（fire-and-forget，通过 debounce 控制频率）
     this.debouncedSave();
   };
 
@@ -320,7 +335,7 @@ class PreferenceManager {
    * 从缓存加载扩展偏好设置
    * @returns 缓存的扩展偏好设置，如果不存在则返回 null
    */
-  private loadCustomFromCache(): CustomPreferencesRecord | null {
+  private async loadCustomFromCache(): Promise<CustomPreferencesRecord | null> {
     return this.cache.getItem<CustomPreferencesRecord>(STORAGE_KEYS.CUSTOM);
   }
 
@@ -328,7 +343,7 @@ class PreferenceManager {
    * 从缓存加载偏好设置
    * @returns 缓存的偏好设置，如果不存在则返回 null
    */
-  private loadFromCache(): null | Preferences {
+  private async loadFromCache(): Promise<null | Preferences> {
     return this.cache.getItem<Preferences>(STORAGE_KEYS.MAIN);
   }
 
@@ -361,6 +376,28 @@ class PreferenceManager {
       : undefined;
   }
 
+  /**
+   * 清理缓存中膨胀的数组字段（保留首次出现的元素）
+   * 用于修复早期版本 defu 合并数组时 concat 追加导致的脏数据
+   */
+  private sanitizeCachedArray(
+    cached: Record<string, any>,
+    group: string,
+    field: string,
+  ) {
+    const node = cached?.[group]?.[field];
+    if (!Array.isArray(node) || node.length <= 1) return;
+    const seen = new Set<unknown>();
+    const deduped = node.filter((item) => {
+      if (seen.has(item)) return false;
+      seen.add(item);
+      return true;
+    });
+    if (deduped.length !== node.length) {
+      cached[group][field] = deduped;
+    }
+  }
+
   private sanitizeCustomPreferences(
     updates: DeepPartial<CustomPreferencesRecord>,
   ) {
@@ -387,17 +424,23 @@ class PreferenceManager {
   /**
    * 保存偏好设置到缓存
    */
-  private saveToCache() {
-    this.cache.setItem(STORAGE_KEYS.MAIN, this.state);
-    this.cache.setItem(STORAGE_KEYS.LOCALE, this.state.app.locale);
-    this.cache.setItem(STORAGE_KEYS.THEME, this.state.theme.mode);
+  private async saveToCache() {
+    try {
+      await this.cache.setItem(STORAGE_KEYS.MAIN, this.state);
+      await this.cache.setItem(STORAGE_KEYS.LOCALE, this.state.app.locale);
+      await this.cache.setItem(STORAGE_KEYS.THEME, this.state.theme.mode);
 
-    if (this.customPreferencesExtension) {
-      this.cache.setItem(STORAGE_KEYS.CUSTOM, { ...this.customState });
-      return;
+      if (this.customPreferencesExtension) {
+        await this.cache.setItem(STORAGE_KEYS.CUSTOM, {
+          ...this.customState,
+        });
+        return;
+      }
+
+      await this.cache.removeItem(STORAGE_KEYS.CUSTOM);
+    } catch (error) {
+      console.error('Failed to save preferences to cache:', error);
     }
-
-    this.cache.removeItem(STORAGE_KEYS.CUSTOM);
   }
 
   /**

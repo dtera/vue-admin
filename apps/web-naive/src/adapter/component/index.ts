@@ -84,8 +84,8 @@ const NUpload = defineAsyncComponent(() =>
   import('naive-ui/es/upload').then((res) => res.NUpload),
 );
 
-const withDefaultPlaceholder = <T extends Component>(
-  component: T,
+const withDefaultPlaceholder = (
+  component: Component,
   type: 'input' | 'select',
   componentProps: Recordable<any> = {},
 ) => {
