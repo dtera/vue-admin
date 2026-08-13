@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import type { Recordable } from '@vben/types';
 
-import type { ProductApi } from '#/api/prods';
-
 import { computed, ref } from 'vue';
 
-import { useVbenDrawer, VbenTree } from '@vben/common-ui';
+import { Tree, useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import { Spin } from 'ant-design-vue';
@@ -13,7 +11,7 @@ import { Spin } from 'ant-design-vue';
 import { useVbenForm } from '#/adapter/form';
 import { $t } from '#/locales';
 
-const formData = ref<ProductApi.Product>();
+const formData = ref<Recordable<any>>();
 
 const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
@@ -30,8 +28,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
   },
   onOpenChange(isOpen) {
     if (isOpen) {
-      const data = drawerApi.getData<ProductApi.Product>();
-      formApi.resetForm();
+      const data = drawerApi.getData<Recordable<any>>();
+      formApi.reset();
       if (data) {
         formData.value = data;
         id.value = data.id;
@@ -66,7 +64,7 @@ function getNodeClass(node: Recordable<any>) {
     <Form>
       <template #permissions="slotProps">
         <Spin :spinning="loadingPermissions" wrapper-class-name="w-full">
-          <VbenTree
+          <Tree
             multiple
             bordered
             :default-expanded-level="2"
@@ -81,7 +79,7 @@ function getNodeClass(node: Recordable<any>) {
               <IconifyIcon v-if="value.meta.icon" :icon="value.meta.icon" />
               {{ $t(value.meta.title) }}
             </template>
-          </VbenTree>
+          </Tree>
         </Spin>
       </template>
     </Form>

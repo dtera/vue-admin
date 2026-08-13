@@ -1,11 +1,41 @@
+// noinspection DuplicatedCode
+
 /**
  * 通用组件共同的使用的基础组件，原先放在 adapter/form 内部，限制了使用范围，这里提取出来，方便其他地方使用
  * 可用于 vben-form、vben-modal、vben-drawer 等组件使用,
  */
 
+import type {
+  AutoCompleteProps,
+  ButtonProps,
+  CheckboxGroupProps,
+  CheckboxProps,
+  DatePickerProps,
+  DividerProps,
+  InputNumberProps,
+  InputProps,
+  MentionsProps,
+  RadioGroupProps,
+  RadioProps,
+  RateProps,
+  SelectProps,
+  SpaceProps,
+  SwitchProps,
+  TextAreaProps,
+  TimePickerProps,
+  TreeSelectProps,
+  UploadChangeParam,
+  UploadProps,
+} from 'ant-design-vue';
+import type { RangePickerProps } from 'ant-design-vue/es/date-picker';
+
 import type { Component } from 'vue';
 
-import type { BaseFormComponentType } from '@vben/common-ui';
+import type {
+  ApiComponentSharedProps,
+  BaseFormComponentType,
+  IconPickerProps,
+} from '@vben/common-ui';
 import type { Recordable } from '@vben/types';
 
 import {
@@ -130,6 +160,47 @@ export type ComponentType =
   | 'TreeSelect'
   | 'Upload'
   | BaseFormComponentType;
+
+type AdapterUploadProps = UploadProps & {
+  aspectRatio?: string;
+  crop?: boolean;
+  draggable?: boolean;
+  handleChange?: (event: UploadChangeParam) => void;
+  maxSize?: number;
+  onDragSort?: (oldIndex: number, newIndex: number) => void;
+  onHandleChange?: (event: UploadChangeParam) => void;
+};
+
+/**
+ * 与 ComponentType 中注册的组件名一一对应，便于 Schema 上 component + componentProps 联动提示
+ */
+export interface ComponentPropsMap {
+  ApiSelect: ApiComponentSharedProps & SelectProps;
+  ApiTreeSelect: ApiComponentSharedProps & TreeSelectProps;
+  AutoComplete: AutoCompleteProps;
+  Checkbox: CheckboxProps;
+  CheckboxGroup: CheckboxGroupProps;
+  DatePicker: DatePickerProps;
+  DefaultButton: ButtonProps;
+  Divider: DividerProps;
+  IconPicker: IconPickerProps;
+  Input: InputProps;
+  InputNumber: InputNumberProps;
+  InputPassword: InputProps;
+  Mentions: MentionsProps;
+  PrimaryButton: ButtonProps;
+  Radio: RadioProps;
+  RadioGroup: RadioGroupProps;
+  RangePicker: RangePickerProps;
+  Rate: RateProps;
+  Select: SelectProps;
+  Space: SpaceProps;
+  Switch: SwitchProps;
+  Textarea: TextAreaProps;
+  TimePicker: TimePickerProps;
+  TreeSelect: TreeSelectProps;
+  Upload: AdapterUploadProps;
+}
 
 async function initComponentAdapter() {
   const components: Partial<Record<ComponentType, Component>> = {

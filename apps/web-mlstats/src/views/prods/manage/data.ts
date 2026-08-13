@@ -77,8 +77,8 @@ export const columns = [
     width: '20%',
   },
   {
-    title: $t('prods.manage.skuMaxPrice'),
-    field: 'skuMaxPrice',
+    title: $t('prods.manage.skuMinPrice'),
+    field: 'skuMinPrice',
     width: '10%',
     type: 'price',
     formatter({ cellValue }: { cellValue: any }): string {
