@@ -20,7 +20,7 @@ const [Form, formApi] = useVbenForm({
 const loadingPermissions = ref(false);
 
 const id = ref();
-const [Drawer, drawerApi] = useVbenDrawer({
+const [Drawer, drawerApi] = useVbenDrawer<Recordable<any>>({
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) return;
@@ -28,7 +28,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
   },
   onOpenChange(isOpen) {
     if (isOpen) {
-      const data = drawerApi.getData<Recordable<any>>();
+      const data = drawerApi.getData();
       formApi.reset();
       if (data) {
         formData.value = data;
@@ -73,7 +73,7 @@ function getNodeClass(node: Recordable<any>) {
             value-field="id"
             label-field="meta.title"
             icon-field="meta.icon"
-            tree-data=""
+            :tree-data="[]"
           >
             <template #node="{ value }">
               <IconifyIcon v-if="value.meta.icon" :icon="value.meta.icon" />
